@@ -39,11 +39,11 @@ else
         grep -q '^[0-9]' /tt3projeto/email.txt
         case $? in
                 0) echo "E-mail inválido"; sleep 3; email;;
-                1) grep -q '@' /tt3projeto/email.txt; CONTEUDO=$?; f1;;
+                1) grep -q '@' /tt3projeto/email.txt; CONTEUDO=$?; f2;;
         esac
 fi
 }
-f1(){
+f2(){
 if [ $CONTEUDO == "0" ]; then
         grep -q ' ' /tt3projeto/email.txt
         case $? in
