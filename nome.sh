@@ -66,7 +66,7 @@ fi
 final(){
 grep -q '\.com$' /tt3/email.txt
 if [ $? == "0" ]; then
-	grep -q $EMAIL /tt3/em.txt
+	grep -q $EMAIL /tt3/.dados/em.txt
 	case $? in
 		0) echo "E-mail já cadastrado no banco de dados!"; sleep 3; email;;
 		1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; fone;;
@@ -78,7 +78,7 @@ fi
 final2(){
 grep -q '\.com\.br$' /tt3/email.txt
 if [ $? == "0" ]; then
-	grep -q $EMAIL /tt3/em.txt
+	grep -q $EMAIL /tt3/.dados/em.txt
 	case $? in
 		0) echo "E-mail já cadastrado no banco de dados!"; sleep 3; email;;
 		1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; fone;;
@@ -90,7 +90,7 @@ fi
 final3(){
 grep -q '\.br$' /tt3/email.txt
 if [ $? == "0" ]; then
-	grep -q $EMAIL /tt3/em.txt
+	grep -q $EMAIL /tt3/.dados/em.txt
 	case $? in
 		0) echo "E-mail já cadastrado no banco de dados!"; sleep 3; email;;
 		1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; fone;;
@@ -104,8 +104,7 @@ fi
 fone(){
 clear
 echo $NOME
-echo "Telefone"
-read -n2 -p"(" DDD; read -n4 -p") " PR; read -n5 -p- SU; echo
+read -n2 -p"Telefone: (" DDD; read -n4 -p") " PR; read -n5 -p- SU; echo
 echo $PR > /tt3/ddd.txt
 grep -q $DDD /tt3/dddbrasil.txt
 case $? in
@@ -135,21 +134,99 @@ else
 fi
 }
 rg(){
-echo "Deu"
+clear
+echo $NOME
+read -n2 -p "Indentificação (RG): " RG; read -n3 -p "." RG1; read -n3 -p "." RG2; read -n2 -p- DG; echo
+echo $RG > /tt3/rg.txt
+grep -q -i '[a-z]' /tt3/rg.txt
+case $? in
+        0) echo "RG inválido"; sleep 3; rg;;
+        1) echo $RG1 > /tt3/rg.txt; ind;;
+esac
+}
+ind(){
+grep -q -i '[a-z]' /tt3/rg.txt
+if [ $? == "0" ]; then
+	echo "RG inválido"
+	sleep 3
+	rg
+else
+	echo $RG2 > /tt3/rg.txt
+	grep -q -i '[a-z]' /tt3/rg.txt
+	case $? in
+		0) echo "RG inválido"; sleep 3; rg;;
+		1) echo $DG > /tt3/rg.txt; digito;;
+	esac
+fi
+}
+digito(){
+grep -q -i '[a-z]' /tt3/rg.txt
+if [ $? == "0" ]; then
+	echo "RG inválido"
+	sleep 3
+	rg
+else
+	echo "."
+	sleep 1
+	echo "."
+	sleep 1
+	echo "."
+	sleep 1
+	cpf
+fi
+}
+cpf(){
+clear
+echo $NOME
+read -n3 -p "CPF: " CPF; read -n3 -p "." CPF1; read -n3 -p "." CPF2; read -n2 -p- CPFDG; echo
+echo $CPF > /tt3/cpf.txt
+grep -q -i '[a-z]' /tt3/cpf.txt
+case $? in
+        0) echo "CPF inválido"; sleep 3; cpf;;
+        1) echo $CPF1 > /tt3/cpf.txt; prox;;
+esac
+}
+prox(){
+grep -q -i '[a-z]' /tt3/cpf.txt
+if [ $? == "0" ]; then
+	echo "CPF inválido"
+	sleep 3
+	cpf
+else
+	echo $CPF2 > /tt3/cpf.txt
+	grep -q -i '[a-z]' /tt3/cpf.txt
+	case $? in
+		0) echo "CPF inválido"; sleep 3; cpf;;
+		1) echo $CPFDG > /tt3/cpf.txt; cpfdigito;;
+	esac
+fi
+}
+cpfdigito(){
+grep -q -i '[a-z]' /tt3/cpf.txt
+if [ $? == "0" ]; then
+	echo "CPF inválido"
+	sleep 3
+	cpf
+else
+	grep $CPF\.$CPF1\.$CPF2\-$CPFDG /tt3/.dados/cpfs.txt
+	case $? in
+		0) echo "CPF já cadastrado"; cpf;;
+		1) echo "."; sleep 1; echo ".";	sleep 1; echo "."; sleep 1; nasc;;
+	esac
+fi
+}
+nasc(){
+echo "isso"
 game
-#clear
-#read -n2 -p "Indentificação (RG): " RG; read -n3 -p "." RG1; read -n3 -p "." RG2; read -n2 -p- DG; echo
-#echo $RG > /tt3projeto/rg.txt
-#grep -q -i '[a-z]' /tt3projeto/rg.txt
-#case $? in
-#        0) echo "RG inválido"; sleep 3; rg;;
-#        1) echo $RG1 > /tt3projeto/rg.txt; ind;;
-#esac
 }
 game(){
 echo "Nome: $NOME" > /tt3/.dados/"$NOME"
-echo $EMAIL >> /tt3/em.txt
+echo $EMAIL >> /tt3/.dados/em.txt
 echo "E-mail: $EMAIL" >> /tt3/.dados/"$NOME"
-echo "Telefone: ($DDD) $PR - $SU" >> /tt3/.dados/"$NOME"
+echo "Telefone: ($DDD)$PR-$SU" >> /tt3/.dados/"$NOME"
+echo "RG: $RG.$RG1.$RG2-$DG" >> /tt3/.dados/"$NOME"
+echo "CPF: $CPF.$CPF1.$CPF2-$CPFDG" >> /tt3/.dados/"$NOME"
+echo "$CPF.$CPF1.$CPF2-$CPFDG" >> /tt3/.dados/cpfs.txt
 }
+
 nome
