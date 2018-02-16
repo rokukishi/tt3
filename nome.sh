@@ -2,8 +2,7 @@
 nome(){
 clear
 echo "Formulário"
-echo "Nome: " 
-read NOME
+read -p "Nome completo: " NOME
 echo $NOME > /tt3/nome.txt
 grep -i -q '^[a-z]' /tt3/nome.txt
 case $? in
@@ -14,10 +13,19 @@ esac
 f1(){
 if [ $CONTEUDO == "0" ]; then
 	grep -q '[0-9]' /tt3/nome.txt
-	case $? in
-		0) echo "Nome inválido"; sleep 3; nome;;
-		1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; echo "Nome: $NOME" > /tt3/.dados/$NOME; email;;
-	esac
+	if [ $? == "0" ]; then
+		echo "Nome inválido"
+		sleep 3
+		nome
+	else
+		find /tt3/.dados/"$NOME"
+		CONTEUDO=$?
+		clear
+		case $CONTEUDO in
+			0) echo "Nome ja exitente no banco de dados"; sleep 3; nome;;
+			1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; email;;
+		esac
+	fi
 else
 	echo "Nome inválido"
 	sleep 3
@@ -27,8 +35,7 @@ fi
 email(){
 clear
 echo $NOME
-echo "E-mail: "
-read EMAIL
+read -p "E-mail: " EMAIL
 echo $EMAIL > /tt3/email.txt
 grep -q '[A-Z]' /tt3/email.txt
 if [ $? = "0" ]; then
@@ -58,24 +65,41 @@ fi
 }
 final(){
 grep -q '\.com$' /tt3/email.txt
-case $? in
-        0) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; echo "E-mail: $EMAIL" >> /tt3/.dados/$NOME; fone;;
-        1) final2;;
-esac
+if [ $? == "0" ]; then
+	grep -q $EMAIL /tt3/em.txt
+	case $? in
+		0) echo "E-mail já cadastrado no banco de dados!"; sleep 3; email;;
+		1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; fone;;
+	esac
+else
+	final2
+fi
 }
 final2(){
 grep -q '\.com\.br$' /tt3/email.txt
-case $? in
-        0) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; echo "E-mail: $EMAIL" >> /tt3/.dados/$NOME; fone;;
-        1) final3;;
-esac
+if [ $? == "0" ]; then
+	grep -q $EMAIL /tt3/em.txt
+	case $? in
+		0) echo "E-mail já cadastrado no banco de dados!"; sleep 3; email;;
+		1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; fone;;
+	esac
+else
+	final3
+fi
 }
 final3(){
 grep -q '\.br$' /tt3/email.txt
-case $? in
-        0) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; echo "E-mail: $EMAIL" >> /tt3/.dados/$NOME; fone;;
-        1) echo "E-mail inválido"; sleep 3; email;;
-esac
+if [ $? == "0" ]; then
+	grep -q $EMAIL /tt3/em.txt
+	case $? in
+		0) echo "E-mail já cadastrado no banco de dados!"; sleep 3; email;;
+		1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; fone;;
+	esac
+else
+	echo "E-mail inválido"
+	sleep 3
+	email
+fi
 }
 fone(){
 clear
@@ -106,12 +130,13 @@ else
         grep -q -i '[a-z]' /tt3/ddd.txt
         case $? in
                 0) echo "Número inválido"; sleep 3; fone;;
-                1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; echo "Telefone: ($DDD) $PR-$SU" >> /tt3/.dados/$NOME; rg;;
+                1) echo "."; sleep 1; echo "."; sleep 1; echo "."; sleep 1; rg;;
         esac
 fi
 }
 rg(){
 echo "Deu"
+game
 #clear
 #read -n2 -p "Indentificação (RG): " RG; read -n3 -p "." RG1; read -n3 -p "." RG2; read -n2 -p- DG; echo
 #echo $RG > /tt3projeto/rg.txt
@@ -121,5 +146,10 @@ echo "Deu"
 #        1) echo $RG1 > /tt3projeto/rg.txt; ind;;
 #esac
 }
-
+game(){
+echo "Nome: $NOME" > /tt3/.dados/"$NOME"
+echo $EMAIL >> /tt3/em.txt
+echo "E-mail: $EMAIL" >> /tt3/.dados/"$NOME"
+echo "Telefone: ($DDD) $PR - $SU" >> /tt3/.dados/"$NOME"
+}
 nome
