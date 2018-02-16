@@ -255,14 +255,16 @@ if (( $? == 0 )); then
 	echo "Data de nascimento inválida"
 	sleep 3
 	nasc
-else
-	if [ $DIA == "00" ]; then
-		echo "Data de nascimento inválida"
-		sleep 3
-		nasc
-	elif (( $DIA <= $diia )); then
+elif [ $DIA == "00" ]; then
+	echo "Data de nascimento inválida"
+	sleep 3
+	nasc
+elif (( $DIA <= $diia )); then
 		aninho
-	fi
+else
+	echo "Data de nascimento inválida"
+	sleep 3
+	nasc
 fi
 }
 aninho(){
