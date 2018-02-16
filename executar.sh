@@ -44,7 +44,7 @@ fone(){
 clear
 echo $NOME
 read -n2 -p"Telefone: (" DDD; read -n4 -p") " PR; read -n5 -p- SU; echo
-echo "$PR-$SU" > /tt3/.info.txt
+echo "$PR$SU" > /tt3/.info.txt
 grep -q $DDD /tt3/.ddd.txt
 case $? in
         0) phon;;
@@ -52,7 +52,7 @@ case $? in
 esac
 }
 phon(){
-grep -q -E '^([1-9){2}([0-9]){3}-([0-9]){3,4}$' /tt3/.info.txt
+grep -q -E '^([1-9]){2}([0-9]){6,7}$' /tt3/.info.txt
 case $? in
         0) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; rg;;
         *) echo "Número inválido"; sleep 3; fone;;
@@ -63,7 +63,7 @@ clear
 echo $NOME
 read -n2 -p "Indentificação (RG): " RG; read -n3 -p "." RG1; read -n3 -p "." RG2; read -n2 -p- DG; echo
 echo "$RG.$RG1.$RG2-$DG" > /tt3/.info.txt
-grep -q -i -E'^([0-9]){2}((\.[0-9]){3}){2}-[xX0-9]{2}$' /tt3/.info.txt
+grep -q -i -E '^([0-9]){2}((\.[0-9]){3}){2}-[xX0-9]{2}$' /tt3/.info.txt
 case $? in
         0) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; cpf;;
         *) echo "RG inválido"; sleep 3; rg;;
@@ -97,7 +97,7 @@ grep -E -q -i '^(0[1-9]|1[0-9]|2[0-9]|3[0-1])/(0[1-9]|1[0-2])/(19[0-9]{2}|200[0-
 if (( $? == 0 )); then
 case $MES in
 		01) diia=31; data;;
-		02) diia=28; data;;
+		02) diia=28; data1;;
 		03) diia=31; data;;
 		04) diia=30; data;;
 		05) diia=31; data;;
@@ -110,313 +110,62 @@ case $MES in
 		12) diia=31; data;;
 		*) echo "Data de nascimento inválida"; sleep 3; nasc;;
 esac
-
+else
+echo "Data de nascimento inválida"
+sleep 3
+nasc
 fi
 }
 data(){
-echo $DIA > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo "Data de nascimento inválida"
-	sleep 3
-	nasc
-elif [ $DIA == "00" ]; then
-	echo "Data de nascimento inválida"
-	sleep 3
-	nasc
-elif (( $DIA <= $diia )); then
-		aninho
+if (( $DIA < $diia )); then
+	echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1 
+	ip	
 else
 	echo "Data de nascimento inválida"
 	sleep 3
 	nasc
 fi
 }
-aninho(){
-echo $ANO > /tt3/.info.txt
-grep '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo "Data de nascimento inválida"
-	sleep 3
-	nasc
-elif [ $ANO == "0000" ]; then
-	echo "Data de nascimento inválida"
-	sleep 3
-	nasc
-elif (( $ANO <= 2018)); then
-	echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1
-	ip
-else 
-	echo "Data de nascimento inválida"
-	sleep 3
-	nasc
-fi
+data1(){
+BISEXTO=1900
+ANAO=1904
+while (( $ANO != $BISEXTO )); do
+	if (( $ANO < $ANAO )); then
+		data
+	elif (( $ANO == $ANAO )); then
+		let diia=($diia+1)
+		data
+	else
+		let BISEXTO=($BISEXTO+4)
+		let ANAO=($ANAO+4)		
+	fi
+done
 }
 ip(){
 clear
 echo $NOME
-read -p "IP: " -d'.' IP; read -p "" -d'.' IP1; read -p "" -d'.' IP2; read -n3 -p "" IP3
-echo $IP > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
+read -p "IP: " -d'.' IP; read -p "" -d'.' IP1; read -p "" -d'.' IP2; read -p "" IP3
+echo "$IP.$IP1.$IP2.$IP3" > /tt3/.info.txt
+grep -q -i -E '^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\.[0-9]|1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]){3}$' /tt3/.info.txt
 if (( $? == 0 )); then
-	echo
-	echo "IP inválido! "
-	sleep 3
-	ip
-elif (( $IP <= 255 )); then
-	case $IP in
-	0) echo; echo "IP inválido!"; sleep 3; ip;;
-	*) wile;;
-	esac
+	mask
 else
 	echo
 	echo "IP inválido!"
 	sleep 3
 	ip
 fi
-}
-wile(){
-JOC=255
-while (( $IP != $JOC )); do
-	let JOC=($JOC-1)
-done
-ip1
-}
-ip1(){
-echo $IP1 > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo
-	echo "IP inválido!"
-	sleep 3
-	ip
-elif (( $IP1 <= 255 )); then
-	wile1
-else
-	echo
-	echo "IP inválido!"
-	sleep 3
-	ip
-fi
-}
-wile1(){
-JOC=255
-while (( $IP2 != $JOC )); do
-	let JOC=($JOC-1)
-done
-ip2
-}
-ip2(){
-echo $IP2 > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo
-	echo "IP inválido!"
-	sleep 3
-	ip
-elif (( $IP2 <= 255 )); then
-	wile2
-
-else
-	echo
-	echo "IP inválido!"
-	sleep 3
-	ip
-fi
-}
-wile2(){
-JOC=255
-while (( $IP2 != $JOC )); do
-	let JOC=($JOC-1)
-done
-ip3
-}
-ip3(){
-echo $IP3 > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo
-	echo "IP inválido!"
-	sleep 3
-	ip
-elif (( $IP3 <= 255 )); then
-wile3
-else
-	echo
-	echo "IP inválido!"
-	sleep 3
-	ip
-fi
-}
-wile3(){
-JOC=255
-while (( $IP3 != $JOC )); do
-	let JOC=($JOC-1)
-done
-echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1
-mask
 }
 mask(){
 clear
 echo $NOME
-read -p "Máscara: " -d'.' MASK; read -p "" -d'.' MASK1; read -p "" -d'.' MASK2; read -n3 -p "" MASK3
-echo $MASK > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
+read -p "Máscara: " -d'.' MASK; read -p "" -d'.' MASK1; read -p "" -d'.' MASK2; read -p "" MASK3
+echo "$MASK.$MASK1.$MASK2.$MASK3" > /tt3/.info.txt
+grep -q -i -E '^((0(\.0){3})|(128(\.0){3})|(192(\.0){3})|(224(\.0){3})|(240(\.0){3})|(248(\.0){3})|(252(\.0){3})|(254(\.0){3})|(255\.(0|128|192|224|240|248|252|254)(\.0){2})|(255\.(0|128|192|224|240|248|252|254)\.0(255\.(0|128|192|224|240|248|252|254|255))))' /tt3/.info.txt
 if (( $? == 0 )); then
-	echo
-	echo "Máscara inválida"
-	sleep 3
-	mask
+	echo "ok"
 else
-	case $MASK in
-		"255") mask1;;
-		"254") outros;;
-		"252") outros;;
-		"248") outros;;
-		"240") outros;; 
-		"224") outros;;
-		"192") outros;;
-		"128") outros;;
-		*) echo; echo "Máscara inválida"; sleep 3; mask;;
-	esac
-fi
-}
-mask1(){
-echo $MASK1 > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo
-	echo "Máscara inválida"
-	sleep 3
-	mask
-else
-	case $MASK1 in
-		"255") mask2;;
-		"254") outros1;;
-		"252") outros1;;
-		"248") outros1;;
-		"240") outros1;;
-		"224") outros1;;
-		"192") outros1;;
-		"128") outros1;;
-		"0") outros1;;
-		*) echo; echo "Máscara inválida"; sleep 3; mask;;
-	esac
-fi
-}
-mask2(){
-echo $MASK2 > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo
-	echo "Máscara inválida"
-	sleep 3
-	mask
-else
-	case $MASK2 in
-		"255") mask3;;
-		"254") outros2;;
-		"252") outros2;;
-		"248") outros2;;
-		"240") outros2;;
-		"224") outros2;;
-		"192") outros2;;
-		"128") outros2;;
-		"0") outros2;;
-		*) echo; echo "Máscara inválida"; sleep 3; mask;;
-	esac
-fi
-}
-mask3(){
-echo $MASK3 > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo
-	echo "Máscara inválida"
-	sleep 3
-	mask
-else
-	case $MASK3 in
-		"255") echo; echo "Máscara inválida"; sleep 1; echo "Máscara de loopback"; sleep 2; mask;;
-		"254") game;;
-		"252") game;;
-		"248") game;;
-		"240") game;;
-		"224") game;;
-		"192") game;;
-		"128") game;;
-		"0") game;;
-		*) echo; echo "Máscara inválida"; sleep 3; mask;;
-	esac
-fi
-}
-outros(){
-if (( $MASK1 == 0 )); then
-	if (( $MASK2 == 0 )); then
-		if (( $MASK3 == 0 )); then
-			echo -n "."
-			sleep 1
-			echo -n "."
-			sleep 1
-			echo -n "."
-			sleep 1
-			game
-		else
-			echo
-			echo "Máscara inválida"
-			sleep 3
-			mask
-		fi
-	else
-		echo
-		echo "Máscara inválida"
-		sleep 3
-		mask
-	fi
-else
-	echo
-	echo "Máscara inválida"
-	sleep 3
-	mask
-fi
-}
-outros1(){
-if (( $MASK2 == 0 )); then
-	if (( $MASK3 == 0 )); then
-		echo -n "."
-		sleep 1
-		echo -n "."
-		sleep 1
-		echo -n "."
-		sleep 1
-		game
-	else
-		echo
-		echo "Máscara inválida"
-		sleep 3
-		mask
-	fi
-else
-	echo
-	echo "Máscara inválida"
-	sleep 3
-	mask
-fi
-}
-outros2(){
-if (( $MASK3 == 0 )); then
-	echo -n "."
-	sleep 1
-	echo -n "."
-	sleep 1
-	echo -n "."
-	sleep 1
-	game
-else
-	echo
-	echo "Máscara inválida"
-	sleep 3
-	mask
+	echo "erro"
 fi
 }
 game(){
