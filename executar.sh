@@ -162,8 +162,8 @@ ip(){
 clear
 echo $NOME
 read -p "IP: " -d'.' IP; read -p "" -d'.' IP1; read -p "" -d'.' IP2; read -p "" IP3
-echo "$IP$IP1$IP2$IP3" > /tt3/.info.txt
-grep -q -E '^([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]){3}$' /tt3/.info.txt
+echo "$IP.$IP1.$IP2.$IP3" > /tt3/.info.txt
+grep -q -E '^(0|[1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(0|[1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$' /tt3/.info.txt
 if (( $? == 0 )); then
 	echo -n "."; sleep 0.25; echo -n "."; sleep 0.25; echo -n "."; sleep 0.25
 	mask
@@ -183,7 +183,7 @@ grep -q -E '^0(0){3}|128(0){3}|192(0){3}|224(0){3}|240(0){3}|248(0){3}|252(0){3}
 if (( $? == 0 )); then
 	LOP="$MASK$MASK1$MASK2$MASK3"
 	IPLOP="$IP$IP1$IP2$IP3"
-	if [ $LOP == "255255255255" && $IPLOP != "127001" ]; then
+	if [ $LOP == "255255255255" ] && [ $IPLOP != "127001" ]; then
 		echo "Máscara inválida"
 		sleep 1
 		echo "Máscara de Loopback"
