@@ -7,7 +7,7 @@ echo $NOME > /tt3/.info.txt
 grep -i -q -E '^([a-z]){3}[a-z ]+$' /tt3/.info.txt  
 case $? in
 	0) f1;;
-	*) echo "Nome inválido 1"; sleep 3; nome;;
+	*) echo "Nome inválido"; sleep 3; nome;;
 esac
 }
 f1(){
@@ -16,7 +16,8 @@ CONTEUDO=$?
 clear
 case $CONTEUDO in
 	0) echo "Nome ja exitente no banco de dados"; sleep 3; nome;;
-	1) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; email;;
+	1) email;;
+#	1) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; email;;
 	*) echo "Nome inválido 2"; sleep 3; nome;;
 esac
 } 
@@ -36,7 +37,8 @@ final(){
 grep -q $EMAIL /tt3/.dados/em.txt
 case $? in
 	0) echo "E-mail já cadastrado no banco de dados!"; sleep 3; email;;
-	1) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; fone;;
+	1) e
+#	1) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; fone;;
 	*) echo "E-mail inválido 2"; sleep 3; email;;
 esac
 }
@@ -62,8 +64,8 @@ rg(){
 clear
 echo $NOME
 read -n2 -p "Indentificação (RG): " RG; read -n3 -p "." RG1; read -n3 -p "." RG2; read -n2 -p- DG; echo
-echo "$RG.$RG1.$RG2-$DG" > /tt3/.info.txt
-grep -q -i -E '^([0-9]){2}((\.[0-9]){3}){2}-[xX0-9]{2}$' /tt3/.info.txt
+echo "$RG$RG1$RG2$DG" > /tt3/.info.txt
+grep -q -E '^([0-9]){2}(([0-9]){3}){2}[xX0-9]{1,2}$' /tt3/.info.txt
 case $? in
         0) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; cpf;;
         *) echo "RG inválido"; sleep 3; rg;;
@@ -73,10 +75,10 @@ cpf(){
 clear
 echo $NOME
 read -n3 -p "CPF: " CPF; read -n3 -p "." CPF1; read -n3 -p "." CPF2; read -n2 -p- CPFDG; echo
-echo "$CPF.$CPF1.$CPF2-$CPFDG" > /tt3/.info.txt
-grep -E -q -i '^([0-9]){3}((\.[0-9]){3}){2}-[0-9]{2}$' /tt3/.info.txt
+echo "$CPF$CPF1$CPF2$CPFDG" > /tt3/.info.txt
+grep -E -q '^([0-9]){3}(([0-9]){3}){2}[0-9]{1,2}$' /tt3/.info.txt
 case $? in
-        0) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; cpfdigio;;
+        0) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; cpfdigito;;
         *) echo "CPF inválido"; sleep 3; cpf;;
 esac
 }
@@ -92,10 +94,10 @@ nasc(){
 clear
 echo $NOME
 read -n2 -p "Data de nascimento (DD/MM/AAAA): " DIA; read -n2 -p / MES; read -n4 -p / ANO; echo
-echo "$DIA/$MES/$ANO" > /tt3/.info.txt
-grep -E -q -i '^(0[1-9]|1[0-9]|2[0-9]|3[0-1])/(0[1-9]|1[0-2])/(19[0-9]{2}|200[0-9]|201[0-8])$' /tt3/.info.txt
+echo "$DIA$MES$ANO" > /tt3/.info.txt
+grep -E -q '^(0[1-9]|1[0-9]|2[0-9]|3[0-1])(0[1-9]|1[0-2])(19[0-9]{2}|200[0-9]|201[0-8])$' /tt3/.info.txt
 if (( $? == 0 )); then
-case $MES in
+	case $MES in
 		01) diia=31; data;;
 		02) diia=28; data1;;
 		03) diia=31; data;;
@@ -108,18 +110,7 @@ case $MES in
 		10) diia=31; data;;
 		11) diia=30; data;;
 		12) diia=31; data;;
-		*) echo "Data de nascimento inválida"; sleep 3; nasc;;
-esac
-else
-echo "Data de nascimento inválida"
-sleep 3
-nasc
-fi
-}
-data(){
-if (( $DIA < $diia )); then
-	echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1 
-	ip	
+	esac
 else
 	echo "Data de nascimento inválida"
 	sleep 3
@@ -140,6 +131,21 @@ while (( $ANO != $BISEXTO )); do
 		let ANAO=($ANAO+4)		
 	fi
 done
+}
+data(){
+if (( $DIA <= $diia )); then
+	echo -n "." 
+	sleep 1
+	echo -n "."
+	sleep 1
+	echo -n "."
+	sleep 1 
+	ip	
+else
+	echo "Data de nascimento inválida"
+	sleep 3
+	nasc
+fi
 }
 ip(){
 clear
