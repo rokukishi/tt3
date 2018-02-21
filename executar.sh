@@ -63,7 +63,7 @@ clear
 echo $NOME
 read -n2 -p "Indentificação (RG): " RG; read -n3 -p "." RG1; read -n3 -p "." RG2; read -n2 -p- DG; echo
 echo "$RG.$RG1.$RG2-$DG" > /tt3/.info.txt
-grep -q -i -E'^([0-9]){2}((\.[0-9]){3}){2}-[a-zA-Z0-9]{2}$' /tt3/.info.txt
+grep -q -i -E'^([0-9]){2}((\.[0-9]){3}){2}-[xX0-9]{2}$' /tt3/.info.txt
 case $? in
         0) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; cpf;;
         *) echo "RG inválido"; sleep 3; rg;;
@@ -73,59 +73,29 @@ cpf(){
 clear
 echo $NOME
 read -n3 -p "CPF: " CPF; read -n3 -p "." CPF1; read -n3 -p "." CPF2; read -n2 -p- CPFDG; echo
-echo $CPF > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
+echo "$CPF.$CPF1.$CPF2-$CPFDG" > /tt3/.info.txt
+grep -E -q -i '^([0-9]){3}((\.[0-9]){3}){2}-[0-9]{2}$' /tt3/.info.txt
 case $? in
-        1) echo $CPF1 > /tt3/.info.txt; prox;;
+        0) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; cpfdigio;;
         *) echo "CPF inválido"; sleep 3; cpf;;
 esac
 }
-prox(){
-grep -q -i '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo "CPF inválido"
-	sleep 3
-	cpf
-else
-	echo $CPF2 > /tt3/.info.txt
-	grep -q -i '[a-z]' /tt3/.info.txt
-	case $? in
-		1) echo $CPFDG > /tt3/.info.txt; cpfdigito;;
-		*) echo "CPF inválido"; sleep 3; cpf;;
-	esac
-fi
-}
 cpfdigito(){
-grep -q -i '[a-z]' /tt3/.info.txt
-if (( $? == 0 )); then
-	echo "CPF inválido"
-	sleep 3
-	cpf
-else
-	grep $CPF\.$CPF1\.$CPF2\-$CPFDG /tt3/.dados/cpfs.txt
-	case $? in
-		0) echo "CPF já cadastrado"; sleep 3; cpf;;
-		1) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; nasc;;
-		*) echo "CPF inválido"; sleep 3; cpf;;
-	esac
-fi
+grep $CPF\.$CPF1\.$CPF2\-$CPFDG /tt3/.dados/cpfs.txt
+case $? in
+	0) echo "CPF já cadastrado"; sleep 3; cpf;;
+	1) echo -n "."; sleep 1; echo -n "."; sleep 1; echo -n "."; sleep 1; nasc;;
+	*) echo "CPF inválido"; sleep 3; cpf;;
+esac
 }
 nasc(){
 clear
 echo $NOME
 read -n2 -p "Data de nascimento (DD/MM/AAAA): " DIA; read -n2 -p / MES; read -n4 -p / ANO; echo
-echo $MES > /tt3/.info.txt
-grep -q -i '[a-z]' /tt3/.info.txt
+echo "$DIA/$MES/$ANO" > /tt3/.info.txt
+grep -E -q -i '^(0[1-9]|1[0-9]|2[0-9]|3[0-1])/(0[1-9]|1[0-2])/(19[0-9]{2}|200[0-9]|201[0-8])$' /tt3/.info.txt
 if (( $? == 0 )); then
-	echo "Data de nascimento inválida"
-	sleep 3
-	nasc
-elif [ $MES == "00" ]; then
-	echo "Data de nascimento inválida"
-	sleep 3
-	nasc
-else
-	case $MES in
+case $MES in
 		01) diia=31; data;;
 		02) diia=28; data;;
 		03) diia=31; data;;
@@ -139,7 +109,8 @@ else
 		11) diia=30; data;;
 		12) diia=31; data;;
 		*) echo "Data de nascimento inválida"; sleep 3; nasc;;
-	esac
+esac
+
 fi
 }
 data(){
