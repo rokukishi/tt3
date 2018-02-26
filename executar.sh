@@ -22,7 +22,7 @@ esac
 } 
 email(){
 clear
-echo $NOME
+echo "Nome: $NOME"
 read -p "E-mail: " EMAIL
 echo $EMAIL > /tt3/.info.txt
 grep -q -E '^([a-z])+([a-z0-9\._])+@([a-z])+([a-z\.])+\.com|\.com\.br|\.br$' /tt3/.info.txt
@@ -42,7 +42,8 @@ esac
 }
 fone(){
 clear
-echo $NOME
+echo "Nome: $NOME"
+echo "E-mail: $EMAIL"
 read -n2 -p "Telefone: (" DDD; read -n4 -p") " PR; read -n5 -p- SU; echo
 echo "$PR$SU" > /tt3/.info.txt
 grep -q $DDD /tt3/.ddd.txt
@@ -60,7 +61,9 @@ esac
 }
 rg(){
 clear
-echo $NOME
+echo "Nome: $NOME"
+echo "E-mail: $EMAIL"
+echo "Telefone: ($DDD) $PR-$SU"
 read -n2 -p "Indentificação (RG): " RG; read -n3 -p "." RG1; read -n3 -p "." RG2; read -n2 -p- DG; echo
 echo "$RG$RG1$RG2$DG" > /tt3/.info.txt
 grep -q -E '^([0-9]){2}(([0-9]){3}){2}[xX0-9]{1,2}$' /tt3/.info.txt
@@ -71,7 +74,10 @@ esac
 }
 cpf(){
 clear
-echo $NOME
+echo "Nome: $NOME"
+echo "E-mail: $EMAIL"
+echo "Telefone: ($DDD) $PR-$SU"
+echo "RG: $RG.$RG1.$RG2-$DG"
 read -n3 -p "CPF: " CPF; read -n3 -p "." CPF1; read -n3 -p "." CPF2; read -n2 -p- CPFDG; echo
 echo "$CPF$CPF1$CPF2$CPFDG" > /tt3/.info.txt
 grep -E -q '^([0-9]){3}(([0-9]){3}){2}([0-9]){1,2}$' /tt3/.info.txt
@@ -90,7 +96,11 @@ esac
 }
 nasc(){
 clear
-echo $NOME
+echo "Nome: $NOME"
+echo "E-mail: $EMAIL"
+echo "Telefone: ($DDD) $PR-$SU"
+echo "RG: $RG.$RG1.$RG2-$DG"
+echo "CPF: $CPF.$CPF1.$CPF2-$CPFDG"
 read -n2 -p "Data de nascimento (DD/MM/AAAA): " DIA; read -n2 -p "/" MES; read -n4 -p "/" ANO; echo
 echo "$DIA$MES$ANO" > /tt3/.info.txt
 grep -E -q '^(0[1-9]|1[0-9]|2[0-9]|3[0-1])(0[1-9]|1[0-2])(19[0-9]{2}|200[0-9]|201[0-8])$' /tt3/.info.txt
@@ -160,7 +170,12 @@ fi
 }
 ip(){
 clear
-echo $NOME
+echo "Nome: $NOME"
+echo "E-mail: $EMAIL"
+echo "Telefone: ($DDD) $PR-$SU"
+echo "RG: $RG.$RG1.$RG2-$DG"
+echo "CPF: $CPF.$CPF1.$CPF2-$CPFDG"
+echo "Data de nascimento: $DIA/$MES/$ANO"
 read -p "IP: " -d'.' IP; read -p "" -d'.' IP1; read -p "" -d'.' IP2; read -p "" IP3
 echo "$IP.$IP1.$IP2.$IP3" > /tt3/.info.txt
 grep -q -E '^(0|[1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(0|[1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$' /tt3/.info.txt
@@ -176,10 +191,16 @@ fi
 }
 mask(){
 clear
-echo $NOME
+echo "Nome: $NOME"
+echo "E-mail: $EMAIL"
+echo "Telefone: ($DDD) $PR-$SU"
+echo "RG: $RG.$RG1.$RG2-$DG"
+echo "CPF: $CPF.$CPF1.$CPF2-$CPFDG"
+echo "Data de nascimento: $DIA/$MES/$ANO"
+echo "IP: $IP.$IP1.$IP2.$IP3"
 read -p "Máscara: " -d'.' MASK; read -p "" -d'.' MASK1; read -p "" -d'.' MASK2; read -p "" MASK3
 echo "$MASK$MASK1$MASK2$MASK3" > /tt3/.info.txt
-grep -q -E '^0(0){3}|128(0){3}|192(0){3}|224(0){3}|240(0){3}|248(0){3}|252(0){3}|254(0){3}|255(0|128|192|224|240|248|252|254)(0){2}|255255(0|128|192|224|240|248|252|254)(0)|255255255(0|128|192|224|240|248|252|254|255)' /tt3/.info.txt
+grep -q -E '^0(0){3}|128(0){3}|192(0){3}|224(0){3}|240(0){3}|248(0){3}|252(0){3}|254(0){3}|255(0|128|192|224|240|248|252|254)(0){2}|255255(0|128|192|224|240|248|252|254)(0)|255255255(0|128|192|224|240|248|252|254|255)$' /tt3/.info.txt
 if (( $? == 0 )); then
 	LOP="$MASK$MASK1$MASK2$MASK3"
 	IPLOP="$IP$IP1$IP2$IP3"
@@ -200,20 +221,34 @@ else
 fi
 }
 game(){
-echo "Nome: $NOME" > /tt3/.dados/"$NOME"
-echo $EMAIL >> /tt3/.dados/em.txt
-echo "E-mail: $EMAIL" >> /tt3/.dados/"$NOME"
-echo "Telefone: ($DDD)$PR-$SU" >> /tt3/.dados/"$NOME"
-echo "RG: $RG.$RG1.$RG2-$DG" >> /tt3/.dados/"$NOME"
-echo "CPF: $CPF.$CPF1.$CPF2-$CPFDG" >> /tt3/.dados/"$NOME"
-echo "$CPF.$CPF1.$CPF2-$CPFDG" >> /tt3/.dados/cpfs.txt
-echo "Data de nascimento: $DIA/$MES/$ANO" >> /tt3/.dados/"$NOME"
-echo "IP: $IP.$IP1.$IP2.$IP3" >> /tt3/.dados/"$NOME"
-echo "Máscara: $MASK.$MASK1.$MASK2.$MASK3" >> /tt3/.dados/"$NOME"
-echo "CADASTRA EFETUADO COM SUCESSO"
-sleep 2
-echo "Programa finalizando em 3 segundos"
-echo -n "3 "; sleep 1; echo -n "2 "; sleep 1; echo -n "1"; sleep 1; echo
-exit 0
+read -p "Informações digitadas estão corretas? (sim/nao): " CORRECT
+echo $CORRECT > /tt3/.info.txt
+grep -E -i -q '^sim|si|s$' /tt3/.info.txt
+if (( $? == 0 )); then
+	echo "Nome: $NOME" > /tt3/.dados/"$NOME"
+	echo $EMAIL >> /tt3/.dados/em.txt
+	echo "E-mail: $EMAIL" >> /tt3/.dados/"$NOME"
+	echo "Telefone: ($DDD)$PR-$SU" >> /tt3/.dados/"$NOME"
+	echo "RG: $RG.$RG1.$RG2-$DG" >> /tt3/.dados/"$NOME"
+	echo "CPF: $CPF.$CPF1.$CPF2-$CPFDG" >> /tt3/.dados/"$NOME"
+	echo "$CPF.$CPF1.$CPF2-$CPFDG" >> /tt3/.dados/cpfs.txt
+	echo "Data de nascimento: $DIA/$MES/$ANO" >> /tt3/.dados/"$NOME"
+	echo "IP: $IP.$IP1.$IP2.$IP3" >> /tt3/.dados/"$NOME"
+	echo "Máscara: $MASK.$MASK1.$MASK2.$MASK3" >> /tt3/.dados/"$NOME"
+	echo "CADASTRA EFETUADO COM SUCESSO"
+	sleep 2
+	echo "Programa finalizando em 3 segundos"
+	echo -n "3 "; sleep 1; echo -n "2 "; sleep 1; echo -n "1"; sleep 1; echo
+	exit 0
+else
+	grep -E -i -q '^nao|na|n$' /tt3/.info.txt
+	if (( $? == 0 )); then
+		nome
+	else
+		echo "Opção inválida"
+		sleep 2
+		game
+	fi
+fi
 }
 nome
